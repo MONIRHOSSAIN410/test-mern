@@ -23,11 +23,13 @@ export const Register = () => {
   useEffect(() => {
     if (isError) {
       toast.error(message);
+      // Without this the error state sticks and re-fires the toast.
+      dispatch(reset());
     }
 
     if (isSuccess && user) {
       toast.success("Registration successful!");
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
       dispatch(reset());
     }
 
@@ -38,13 +40,17 @@ export const Register = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
     dispatch(register({ name, email, password }));
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md bg-white p-8 rounded shadow">
-        <h2 className="text-2xl font-bold mb-6 text-center text-indigo-600">
+        <h2 className="text-2xl font-bold mb-6 text-center text-brand-600">
           Register to DashFlow
         </h2>
         <form onSubmit={onSubmit}>
@@ -55,7 +61,7 @@ export const Register = () => {
               name="name"
               value={name}
               onChange={onChange}
-              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
               placeholder="Your name"
               required
             />
@@ -67,7 +73,7 @@ export const Register = () => {
               name="email"
               value={email}
               onChange={onChange}
-              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
               placeholder="you@example.com"
               required
             />
@@ -79,21 +85,23 @@ export const Register = () => {
               name="password"
               value={password}
               onChange={onChange}
-              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Create a password"
+              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
+              placeholder="Create a password (min 6 characters)"
+              minLength={6}
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
+            disabled={isLoading}
+            className="w-full bg-brand-600 text-white py-2 rounded hover:bg-brand-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isLoading ? "Registering..." : "Register"}
           </button>
         </form>
         <p className="text-sm text-center text-gray-600 mt-4">
           Already have an account?{" "}
-          <Link to="/login" className="text-indigo-600 font-medium">
+          <Link to="/login" className="text-brand-600 font-medium">
             Login
           </Link>
         </p>

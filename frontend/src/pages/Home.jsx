@@ -14,18 +14,32 @@ export const Home = () => {
         <p className="text-lg md:text-xl mb-8 max-w-xl text-gray-600">
           DashFlow helps you manage items, track sales, and stay on top of your business — all in one place.
         </p>
-        <Link
-          to="/login"
-          className="bg-indigo-600 text-white px-6 py-3 rounded-md text-lg font-medium hover:bg-indigo-700 transition"
-        >
-          Get Started
-        </Link>
+        <div className="flex flex-wrap gap-3 justify-center">
+          <Link
+            to="/login"
+            className="bg-brand-600 text-white px-6 py-3 rounded-md text-lg font-medium hover:bg-brand-700 transition"
+          >
+            Get Started
+          </Link>
+          <Link
+            to="/search"
+            className="border border-brand-600 text-brand-600 px-6 py-3 rounded-md text-lg font-medium hover:bg-brand-50 transition"
+          >
+            Try Search
+          </Link>
+          <Link
+            to="/contact"
+            className="border border-slate-300 text-slate-600 px-6 py-3 rounded-md text-lg font-medium hover:bg-white transition"
+          >
+            Contact Us
+          </Link>
+        </div>
       </section>
 
       {/* Features Section */}
-      {/* <section className="bg-white py-16 px-6">
+      <section className="bg-white py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h3 className="text-2xl font-semibold mb-8 text-indigo-600">
+          <h3 className="text-2xl font-semibold mb-8 text-brand-600">
             Features
           </h3>
           <div className="grid md:grid-cols-3 gap-8">
@@ -47,7 +61,7 @@ export const Home = () => {
             </div>
           </div>
         </div>
-      </section> */}
+      </section>
 
       {/* Footer */}
       <footer className="text-center text-sm py-6 text-gray-500">

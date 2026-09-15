@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login, reset } from "../features/auth/authSlice";
 import { toast } from "react-toastify";
@@ -14,6 +14,8 @@ export const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = location.state?.from?.pathname || "/dashboard";
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
@@ -27,10 +29,10 @@ export const Login = () => {
 
     if (isSuccess && user) {
       toast.success("Logged in successfully!");
-      navigate("/dashboard");
+      navigate(redirectTo, { replace: true });
       dispatch(reset());
     }
-  }, [isError, isSuccess, user, message, navigate, dispatch]);
+  }, [isError, isSuccess, user, message, navigate, dispatch, redirectTo]);
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,7 +45,7 @@ export const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md bg-white p-8 rounded shadow">
-        <h2 className="text-2xl font-bold mb-6 text-center text-indigo-600">
+        <h2 className="text-2xl font-bold mb-6 text-center text-brand-600">
           Login to DashFlow
         </h2>
         <form onSubmit={onSubmit}>
@@ -54,7 +56,7 @@ export const Login = () => {
               name="email"
               value={email}
               onChange={onChange}
-              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
               placeholder="you@example.com"
               required
             />
@@ -66,21 +68,22 @@ export const Login = () => {
               name="password"
               value={password}
               onChange={onChange}
-              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
               placeholder="Enter your password"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
+            disabled={isLoading}
+            className="w-full bg-brand-600 text-white py-2 rounded hover:bg-brand-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>
         <p className="text-sm text-center text-gray-600 mt-4">
           Don’t have an account?{" "}
-          <Link to="/register" className="text-indigo-600 font-medium">
+          <Link to="/register" className="text-brand-600 font-medium">
             Register
           </Link>
         </p>
