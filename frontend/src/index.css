@@ -1,1 +1,34 @@
 @import "tailwindcss";
+
+/*
+ * The Contact / Search pages use `brand-*` utility classes (brand-100,
+ * brand-500, brand-600, brand-700, brand-800). Those are not part of the
+ * default Tailwind palette, so every one of them silently rendered as no
+ * colour at all. Defining the scale here makes them real utilities.
+ */
+@theme {
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-400: #818cf8;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
+  --color-brand-800: #3730a3;
+  --color-brand-900: #312e81;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+/* Used by Searchtxt.jsx for matched terms. */
+.search-highlight {
+  background-color: #fde047;
+  color: #1f2937;
+  border-radius: 0.2rem;
+  padding: 0 0.1rem;
+}

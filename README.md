@@ -1,40 +1,42 @@
-
 # DashFlow – Inventory & Sales Dashboard (MERN Stack)
 
-**DashFlow** is a modern and responsive web application for managing inventory items and sales records, designed to showcase full-stack MERN skills.
-
-This project is ideal for small businesses and individuals who want to manage products and track sales seamlessly in one place.
+**DashFlow** is a responsive web application for managing inventory items,
+designed to showcase full-stack MERN skills.
 
 ---
 
 ## 🚀 Tech Stack
 
 ### 🔹 Frontend
-- React.js
+- React 19 + Vite
 - Redux Toolkit
-- Tailwind CSS
-- React Router DOM
+- Tailwind CSS v4
+- React Router DOM v7
 - React Toastify
+- Framer Motion
+- Axios
 
 ### 🔹 Backend
 - Node.js
-- Express.js
-- MongoDB
-- Mongoose
+- Express 5
+- MongoDB + Mongoose
 - JSON Web Token (JWT)
 - bcryptjs (Password Hashing)
 
 ---
 
-## 🔐 Core Features
+## 🔐 Features
 
-- ✅ User Authentication (Register/Login)
-- ✅ Protected Routes with JWT
-- ✅ Item Management (Add, Edit, Delete, Search)
-- ✅ Sales Management (Add, Edit, Delete, Search)
-- ✅ Dashboard UI with Sidebar & Topbar
-- ✅ Toast Notifications
-- ✅ Responsive Design
+| Feature | Status |
+| --- | --- |
+| User registration & login (JWT) | ✅ Working |
+| Protected routes | ✅ Working |
+| Item management (add / edit / delete / search) | ✅ Working |
+| Dashboard with inventory stats | ✅ Working |
+| Paragraph search with live highlighting | ✅ Working |
+| Contact form (client + server validation) | ✅ Working |
+| Toast notifications & responsive design | ✅ Working |
+| Sales management | 🚧 Not implemented (no backend model yet) |
 
 ---
 
@@ -43,7 +45,21 @@ This project is ideal for small businesses and individuals who want to manage pr
 ```
 DashFlow/
 ├── backend/         # Node.js + Express + MongoDB API
+│   ├── config/      # DB connection
+│   ├── controllers/ # Route handlers
+│   ├── middleware/  # auth + central error handling
+│   ├── models/      # Mongoose schemas
+│   └── routes/      # auth, items, contact, paragraph
 ├── frontend/        # React + Tailwind + Redux UI
+│   └── src/
+│       ├── api/         # shared axios client
+│       ├── app/         # redux store
+│       ├── components/  # Navbar, Sidebar, Loader, PrivateRoute
+│       ├── features/    # auth slice + service
+│       ├── layouts/     # DashboardLayout
+│       ├── pages/       # Home, Login, Register, Dashboard, Items,
+│       │                #   Sales, Searchtxt, ContactUs
+│       └── utils/       # auth helpers
 └── README.md
 ```
 
@@ -51,48 +67,62 @@ DashFlow/
 
 ## ⚙️ Setup Instructions
 
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-username/dashflow.git
-cd dashflow
-```
-
----
-
-### 2. Backend Setup
+### 1. Backend
 
 ```bash
 cd backend
 npm install
 ```
 
-Create a `.env` file inside the `backend` folder:
+Create `backend/.env` (copy `.env.example`):
 
 ```
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
+PORT=5008
+MONGO_URI=memory          # or a real mongodb:// connection string
+JWT_SECRET=a_long_random_secret
+CLIENT_URL=http://localhost:5173
 ```
 
-Start backend server:
+`MONGO_URI=memory` spins up an in-memory MongoDB so you can run the app
+without installing MongoDB. The first run downloads a MongoDB binary, so it
+needs internet access; for offline use, point `MONGO_URI` at a real server.
+
 ```bash
-npm run dev
+npm run dev      # http://localhost:5008
 ```
 
----
-
-### 3. Frontend Setup
+### 2. Frontend
 
 ```bash
 cd ../frontend
 npm install
+npm run dev      # http://localhost:5173
 ```
 
-Start frontend dev server:
-```bash
-npm run dev
+Optional `frontend/.env`:
+
 ```
+VITE_API_URL=http://localhost:5008
+```
+
+---
+
+## 🔌 API Reference
+
+| Method | Route | Auth | Description |
+| --- | --- | --- | --- |
+| GET | `/api/health` | – | Server status |
+| POST | `/api/auth/register` | – | Create account, returns JWT |
+| POST | `/api/auth/login` | – | Log in, returns JWT |
+| GET | `/api/auth/me` | ✅ | Current user |
+| GET | `/api/items` | ✅ | List own items (`?search=` supported) |
+| POST | `/api/items` | ✅ | Create item |
+| PUT | `/api/items/:id` | ✅ | Update own item |
+| DELETE | `/api/items/:id` | ✅ | Delete own item |
+| GET | `/api/paragraph` | – | Paragraph for the search page |
+| POST | `/api/contact` | – | Validate & accept a contact message |
+
+Every error response is JSON: `{ "success": false, "message": "..." }`.
 
 ---
 

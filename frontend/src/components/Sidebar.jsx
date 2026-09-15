@@ -14,12 +14,12 @@ export const Sidebar = () => {
     navigate("/login");
   };
 
-  const linkClass = "block py-2.5 px-4 rounded hover:bg-indigo-100";
-  const activeClass = "bg-indigo-100 text-indigo-600 font-semibold";
+  const linkClass = "block py-2.5 px-4 rounded hover:bg-brand-100";
+  const activeClass = "bg-brand-100 text-brand-600 font-semibold";
 
   return (
     <aside className="w-64 h-screen bg-white border-r shadow-sm fixed left-0 top-0">
-      <div className="p-6 text-2xl font-bold text-indigo-600">DashFlow</div>
+      <div className="p-6 text-2xl font-bold text-brand-600">DashFlow</div>
       <nav className="px-4 space-y-1">
         <NavLink
           to="/dashboard"

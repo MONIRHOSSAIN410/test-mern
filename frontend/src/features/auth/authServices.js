@@ -1,17 +1,21 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:5000/api/auth/"; // Update when backend is deployed
+import apiClient from "../../api/client.js";
 
 // Register User
 const register = async (userData) => {
-  const response = await axios.post(API_URL + "register", userData);
-  return response.data;
+  const { data } = await apiClient.post("/api/auth/register", userData);
+  if (data?.token) {
+    localStorage.setItem("user", JSON.stringify(data));
+  }
+  return data;
 };
 
 // Login User
 const login = async (userData) => {
-  const response = await axios.post(API_URL + "login", userData);
-  return response.data;
+  const { data } = await apiClient.post("/api/auth/login", userData);
+  if (data?.token) {
+    localStorage.setItem("user", JSON.stringify(data));
+  }
+  return data;
 };
 
 // Logout User
