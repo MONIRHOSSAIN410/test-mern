@@ -1,44 +1,51 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "./authServices";
+import { getStoredUser, isTokenExpired } from "../../utils/authUtils";
 
-// Initial state
-const user = JSON.parse(localStorage.getItem("user"));
+// A bad JSON.parse here used to throw at import time and blank the whole app;
+// getStoredUser() handles corrupted entries safely.
+const stored = getStoredUser();
+const user = stored && !isTokenExpired(stored.token) ? stored : null;
+if (stored && !user) localStorage.removeItem("user");
 
 const initialState = {
-  user: user || null,
+  user,
   isLoading: false,
   isSuccess: false,
   isError: false,
   message: "",
 };
 
-// Thunks (register & login will call backend later)
-export const register = createAsyncThunk("auth/register", async (userData, thunkAPI) => {
-  try {
-    return await authService.register(userData);
-  } catch (error) {
-    const message =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
-      "Registration failed";
-    return thunkAPI.rejectWithValue(message);
+export const register = createAsyncThunk(
+  "auth/register",
+  async (userData, thunkAPI) => {
+    try {
+      return await authService.register(userData);
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Registration failed";
+      return thunkAPI.rejectWithValue(message);
+    }
   }
-});
+);
 
-export const login = createAsyncThunk("auth/login", async (userData, thunkAPI) => {
-  try {
-    return await authService.login(userData);
-  } catch (error) {
-    const message =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
-      "Login failed";
-    return thunkAPI.rejectWithValue(message);
+export const login = createAsyncThunk(
+  "auth/login",
+  async (userData, thunkAPI) => {
+    try {
+      return await authService.login(userData);
+    } catch (error) {
+      const message =
+        error.response?.data?.message || error.message || "Login failed";
+      return thunkAPI.rejectWithValue(message);
+    }
   }
-});
+);
 
 export const logout = createAsyncThunk("auth/logout", async () => {
-  localStorage.removeItem("user");
+  authService.logout();
 });
 
 const authSlice = createSlice({
@@ -57,12 +64,13 @@ const authSlice = createSlice({
       // Register
       .addCase(register.pending, (state) => {
         state.isLoading = true;
+        state.isError = false;
+        state.message = "";
       })
       .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.user = action.payload;
-        localStorage.setItem("user", JSON.stringify(action.payload));
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
@@ -73,12 +81,13 @@ const authSlice = createSlice({
       // Login
       .addCase(login.pending, (state) => {
         state.isLoading = true;
+        state.isError = false;
+        state.message = "";
       })
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.user = action.payload;
-        localStorage.setItem("user", JSON.stringify(action.payload));
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
@@ -89,6 +98,9 @@ const authSlice = createSlice({
       // Logout
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
+        state.isSuccess = false;
+        state.isError = false;
+        state.message = "";
       });
   },
 });
